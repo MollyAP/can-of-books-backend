@@ -1,61 +1,64 @@
 'use strict';
 
-require('dotenv').config();
+const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
-
+const Book = require('./Schema/Book');
+const Seed = require('./Schema/Seed')
+require('dotenv').config();
 const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 3001;
 
-app.get('/test', (request, response) => {
-
-  response.send('test request received')
-
-})
-
-app.listen(PORT, () => console.log(`listening on ${PORT}`));
-
-
-// cool imports yo
-
-const express = require("express"); // Installed Express
-const mongoose = require("mongoose"); // Installed MongoDB
-const app = express();
-
-mongoose.connect("mongodb://localhost:27017", { // Connecting mongoDB to lost host 27017
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}, (err) => {
-  if (err) {
-    console.log(err); // Log any connection error
-  } else {
-    console.log("successfully connected"); // Connection successful message
+// Async function to connect to MongoDB
+const connect = async () => {
+  try {
+    await mongoose.connect('mongodb://127.0.0.1:27017', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
   }
-});
+};
 
-app.listen(3000, () => {
-  console.log("on port 3000!"); // Server listening on port 3000
-});
-
-// Start of the schema definition
-const bookSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required:true
-  },
-  status: {
-    type: String,
-    enum: ['available', 'borrowed', 'unavailable'], // Available status options: 'available', 'borrowed', 'unavailable'
-    default: 'available' // Default status set to 'available' if not provided
+// Async function to disconnect from MongoDB
+const disconnect = async () => {
+  try {
+    await mongoose.disconnect();
+    console.log('Disconnected from MongoDB');
+  } catch (error) {
+    console.error('Error disconnecting from MongoDB:', error);
   }
+};
+
+app.get('/test', async (request, response) => {
+  // Connect to MongoDB
+  await connect();
+
+  // Perform your operations with the database here
+
+  // Disconnect from MongoDB
+  await disconnect();
+
+  response.send('test request received');
 });
 
-const Book = mongoose.model('Book', bookSchema);
+// Route to fetch all books
+app.get('/books', async (req, res) => {
+  // Connect to MongoDB
+  await connect();
 
-module.exports = Book;
+  // Fetch all books from the database
+  const books = await Book.find();
+
+  // Disconnect from MongoDB
+  await disconnect();
+
+  // Return the books as a response
+  res.json(books);
+});
+
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
