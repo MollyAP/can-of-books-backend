@@ -35,10 +35,12 @@ const Seed = async () => {
             status: 'Available',
         });
 
-        // Save the books to the database
-        await Book.insertMany([book1, book2, book3]);
-
-        console.log('Database seeded successfully');
+        // Check for any errors
+        if (result && result.writeErrors && result.writeErrors.length > 0) {
+            console.error('Error seeding the database:', result.writeErrors);
+        } else {
+            console.log('Database seeded successfully');
+        }
     } catch (error) {
         console.error('Error seeding the database:', error);
     } finally {
