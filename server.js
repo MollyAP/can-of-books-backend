@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3001;
 // Async function to connect to MongoDB
 const connect = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017', {
+    await mongoose.connect(process.env.databaseurl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
