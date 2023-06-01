@@ -9,6 +9,7 @@ const Seed = require('./Schema/Seed')
 
 const app = express();
 app.use(cors());
+app.use(express.json()); // Parse JSON request bodies
 
 const PORT = process.env.PORT || 3001;
 
@@ -35,16 +36,34 @@ const disconnect = async () => {
   }
 };
 
-app.get('/test', async (request, response) => {
+// Route to create a new book
+app.post('/books', async (req, res) => {
   // Connect to MongoDB
   await connect();
 
-  // Perform your operations with the database here
+  // Extract the book properties from the request body
+  const { title, description, status } = req.body;
 
-  // Disconnect from MongoDB
-  await disconnect();
+  // Create a new book object using the extracted properties
+  const newBook = new Book({
+    title,
+    description,
+    status,
+  });
 
-  response.send('test request received');
+  try {
+    // Save the new book to the database
+    const savedBook = await newBook.save();
+
+    // Disconnect from MongoDB
+    await disconnect();
+
+    // Return the saved book as a response
+    res.status(201).json(savedBook);
+  } catch (error) {
+    console.error('Error creating a new book:', error);
+    res.status(500).json({ error: 'Failed to create a new book' });
+  }
 });
 
 // Route to fetch all books
