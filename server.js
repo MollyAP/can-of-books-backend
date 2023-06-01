@@ -81,4 +81,32 @@ app.get('/books', async (req, res) => {
   res.json(books);
 });
 
+// Route to delete a book
+app.delete('/books/:id', async (req, res) => {
+  // Connect to MongoDB
+  await connect();
+
+  try {
+    // Access the book ID from the request parameters
+    const bookId = req.params.id;
+
+    // Find the book by its id and remove it from the database
+    const deletedBook = await Book.findByIdAndRemove(bookId);
+
+    if (!deletedBook) {
+      // If the book is not found, return a 404 status code
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    // Disconnect from MongoDB
+    await disconnect();
+
+    // Return a success message as a response
+    res.json({ message: 'Book deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting a book:', error);
+    res.status(500).json({ error: 'Failed to delete the book' });
+  }
+});
+
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
