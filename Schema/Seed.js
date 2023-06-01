@@ -1,14 +1,10 @@
 const mongoose = require('mongoose');
 const Book = require('./Book');
 
-
-
-
-
 // Function to seed the database with books
 const Seed = async () => {
     try {
-
+console.log(process.env.databaseurl)
         // Connect to MongoDB
         mongoose.connect(process.env.databaseurl, {
             useNewUrlParser: true,
