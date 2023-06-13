@@ -49,6 +49,7 @@ app.post('/books', async (req, res) => {
     title,
     description,
     status,
+    author,
   });
 
   try {
@@ -79,6 +80,37 @@ app.get('/books', async (req, res) => {
 
   // Return the books as a response
   res.json(books);
+});
+
+
+// Route to update a book
+app.put('/books/:id', async (req, res) => {
+  // Connect to MongoDB
+  await connect();
+
+  try {
+    // Access the book ID from the request parameters
+    const bookId = req.params.id;
+
+    // Find the book by its id and update it with the new data
+    const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, {
+      new: true,
+    });
+
+    if (!updatedBook) {
+      // If the book is not found, return a 404 status code
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    // Disconnect from MongoDB
+    await disconnect();
+
+    // Return the updated book as a response
+    res.json(updatedBook);
+  } catch (error) {
+    console.error('Error updating a book:', error);
+    res.status(500).json({ error: 'Failed to update the book' });
+  }
 });
 
 // Route to delete a book
