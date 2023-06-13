@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // Parse JSON request bodies
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // Async function to connect to MongoDB
 const connect = async () => {
@@ -42,7 +42,7 @@ app.post('/books', async (req, res) => {
   await connect();
 
   // Extract the book properties from the request body
-  const { title, description, status } = req.body;
+  const { title, description, status, author } = req.body;
 
   // Create a new book object using the extracted properties
   const newBook = new Book({
