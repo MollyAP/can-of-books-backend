@@ -18,18 +18,21 @@ console.log(process.env.databaseurl)
             title: 'Homestuck',
             description: 'A webcomic written and illustrated by Andrew Hussie.',
             status: 'Available',
+            author: 'Andrew Hussie',
         });
 
         const book2 = new Book({
             title: 'Dead Dead Demon\'s Dededede Destruction',
             description: 'A manga series written and illustrated by Inio Asano.',
             status: 'Available',
+            author: 'Inio Asano',
         });
 
         const book3 = new Book({
             title: 'Maximum Ride',
             description: 'A series of young adult science fiction novels by James Patterson.',
             status: 'Available',
+            author: 'James Patterson',
         });
 
         // Save the books to the database

@@ -14,6 +14,10 @@ const bookSchema = new mongoose.Schema({
     enum: ['Available', 'Checked Out', 'On Hold'],
     default: 'Available',
   },
+  author: {
+    type: String,
+    required: true,
+  },
 });
 
 const Book = mongoose.model('Book', bookSchema);
